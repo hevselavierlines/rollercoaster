@@ -33,6 +33,8 @@ void ofApp::setup() {
 
     isForceVisible = false;
     
+    ball.setBodyColor(ofColor(0xFF8C00));
+    
     Particle::Ref p(new Particle());
     
     ForceGenerator::Ref fg;
@@ -60,6 +62,9 @@ void ofApp::update() {
     t += dt;
 
     trackElem.checkDifference();
+    
+    ofVec3f mightBallPos = trackElem.getPositionByScale(ballPos);
+    ball.setPosition(mightBallPos);
 }
 
 void ofApp::draw() {
@@ -82,6 +87,7 @@ void ofApp::draw() {
         ofPopStyle();
     }
     trackElem.draw();
+    ball.draw();
     
     // render all particles
     for(auto p: particles) (*p).draw();
@@ -206,6 +212,9 @@ void ofApp::drawMainWindow() {
             trackElem.setType(Track::Type::LOOP);
             trackElem.setLoopTheLoopArguments(circleRadius, loopA, loopB, loopC);
         }
+        
+        
+        ImGui::SliderFloat("Ball Position", &ballPos, 0.0f, 1.0f, "%.2f");
         
         // TODO - numeric output goes here
         if (ImGui::CollapsingHeader("Numerical Output")) {

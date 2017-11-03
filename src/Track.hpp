@@ -40,6 +40,8 @@ public:
     void checkDifference();
     
     void setType(Type _type);
+    
+    ofVec3f getPositionByScale(float scale);
 };
 
 #endif /* Track_hpp */

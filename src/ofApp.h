@@ -10,6 +10,8 @@
 
 #include "Track.hpp"
 
+#include "YAMPE/Particle.h"
+
 #include "ParticleForceGeneratorRegistry.h"
 
 class ofApp : public ofBaseApp {
@@ -75,7 +77,9 @@ public:
     // TODO - simimulation (specific stuff)
     
 private:
+    YAMPE::Particle ball;
     Track trackElem;
+    float ballPos;
     // or here
 
     YAMPE::P::ForceGeneratorRegistry forceGenerators;

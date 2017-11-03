@@ -114,7 +114,7 @@ void Track::generate() {
         ofMatrix.translate(0, 5, 0);
         float seti = 0.0f;
         for(int i = 0; i <= steps; ++i) {
-            t = (2*3.141592654) / 200 * i;
+            t = (2*3.141592654) / steps * i;
             float x = radius * cos(t);
             float y = radius * sin(t);
             
@@ -151,7 +151,7 @@ void Track::generate() {
         float r = radius;
         float seti = 0.0f;
         for(int i = 0; i <= steps; ++i) {
-            t = (2*3.141592654) / 200 * i;
+            t = (2*3.141592654) / steps * i;
             float x = cos(ltlA * t) * r;
             float y = sin(ltlB * t) * r * 0.25f;
             float z = sin(ltlC * t) * r;
@@ -191,5 +191,15 @@ void Track::checkDifference() {
         changed = false;
         generate();
     }
+}
+
+ofVec3f Track::getPositionByScale(float scale) {
+    for(int i = 0; i < nodes.size(); i++) {
+        float currScale = nodes[i]->getScale();
+        if(currScale >= scale) {
+            return nodes[i]->getElement();
+        }
+    }
+    return ofVec3f();
 }
 
