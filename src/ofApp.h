@@ -74,7 +74,12 @@ public:
     int loopB;
     int loopC;
     float strokeWidth;
+    float velocity = 0.001f;
+    float currAngle;
+    float force;
+    bool animate = false;
     // TODO - simimulation (specific stuff)
+    void toggleAnimation();
     
 private:
     YAMPE::Particle ball;

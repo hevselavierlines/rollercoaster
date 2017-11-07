@@ -42,6 +42,7 @@ public:
     void setType(Type _type);
     
     ofVec3f getPositionByScale(float scale);
+    TrackNode::Ref getTrackNodeByScale(float scale);
 };
 
 #endif /* Track_hpp */

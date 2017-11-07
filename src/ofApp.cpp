@@ -63,8 +63,39 @@ void ofApp::update() {
 
     trackElem.checkDifference();
     
-    ofVec3f mightBallPos = trackElem.getPositionByScale(ballPos);
-    ball.setPosition(mightBallPos);
+    if(animate) {
+        ballPos += velocity;
+        if(ballPos > 1.0f) {
+            ballPos = 0.0f;
+        }
+        if(ballPos < 0.0f) {
+            ballPos = 1.0f;
+        }
+    }
+    TrackNode::Ref currentTrackNode = trackElem.getTrackNodeByScale(ballPos);
+    ofVec3f newBallPos = currentTrackNode->getElement();
+    ofVec3f newBallTangent = currentTrackNode->getTangent();
+    
+    currAngle = ofRadToDeg(atan2(newBallTangent.x,newBallTangent.y)) - 90.0f;
+    while (currAngle < 0) {
+        currAngle += 360;
+    }
+    if(animate) {
+        float force = 9.81f * sin(ofDegToRad(currAngle));
+        ball.acceleration = newBallTangent * force;
+        ball.integrate(dt);
+        if(force > 0) {
+            velocity += ball.acceleration.length() * 0.0001f;
+        } else {
+            velocity -= ball.acceleration.length() * 0.0001f;
+        }
+        //velocity = ball.velocity.length() * 0.001f;
+    } else {
+        ball.velocity.x = 0.0f;
+        ball.velocity.y = 0.0f;
+        ball.velocity.z = 0.0f;
+    }
+    ball.setPosition(newBallPos);
 }
 
 void ofApp::draw() {
@@ -88,7 +119,6 @@ void ofApp::draw() {
     }
     trackElem.draw();
     ball.draw();
-    
     // render all particles
     for(auto p: particles) (*p).draw();
 
@@ -214,7 +244,15 @@ void ofApp::drawMainWindow() {
         }
         
         
-        ImGui::SliderFloat("Ball Position", &ballPos, 0.0f, 1.0f, "%.2f");
+        ImGui::SliderFloat("Ball Position", &ballPos, 0.0f, 1.0f, "%.3f");
+        if(ImGui::Button("Animation")) {
+            if(animate == false) {
+                animate = true;
+            } else {
+                animate = false;
+            }
+        }
+        ImGui::Text("Angle: %3.2f", currAngle);
         
         // TODO - numeric output goes here
         if (ImGui::CollapsingHeader("Numerical Output")) {
@@ -230,6 +268,10 @@ void ofApp::drawMainWindow() {
     mainWindowRectangle.setSize(ImGui::GetWindowWidth(), ImGui::GetWindowHeight());
     ImGui::End();
 
+}
+
+void ofApp::toggleAnimation() {
+    animate = !animate;
 }
 
 

@@ -153,7 +153,7 @@ void Track::generate() {
         for(int i = 0; i <= steps; ++i) {
             t = (2*3.141592654) / steps * i;
             float x = cos(ltlA * t) * r;
-            float y = sin(ltlB * t) * r * 0.25f;
+            float y = sin(ltlB * t) * r * 0.25f + 5.0f;
             float z = sin(ltlC * t) * r;
             ofVec3f newPos;
             newPos.x = x;
@@ -194,12 +194,25 @@ void Track::checkDifference() {
 }
 
 ofVec3f Track::getPositionByScale(float scale) {
-    for(int i = 0; i < nodes.size(); i++) {
-        float currScale = nodes[i]->getScale();
-        if(currScale >= scale) {
-            return nodes[i]->getElement();
-        }
-    }
-    return ofVec3f();
+    return getTrackNodeByScale(scale)->getElement();
 }
+
+TrackNode::Ref Track::getTrackNodeByScale(float scale) {
+    int n = nodes.size();
+    int first  = 0;
+    int last   = n - 1;
+    int middle = (first + last)/2;
+    
+    while (first <= last) {
+        if (nodes[middle]->getScale() < scale ) {
+            first = middle + 1;
+        } else {
+            last = middle - 1;
+        }
+        middle = (first + last) / 2;
+    }
+    return nodes[middle];
+}
+
+
 
