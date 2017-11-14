@@ -63,39 +63,40 @@ void ofApp::update() {
 
     trackElem.checkDifference();
     
+    TrackNode::Ref currentTrackNode = trackElem.getTrackNodeByScale(ballPos);
+    ofVec3f newBallPos = currentTrackNode->getElement();
+    ofVec3f newBallTangent = currentTrackNode->getTangent();
+    
+    ofVec3f upVector;
+    upVector.x = 0.0f;
+    upVector.y = 1.0f;
+    upVector.z = 0.0f;
+    
+    currAngle = newBallTangent.angle(upVector) - 90.0f;
+    
     if(animate) {
-        ballPos += velocity;
+        float force = 9.81f * sin(ofDegToRad(currAngle));
+        ofVec3f acceleration = newBallTangent * force;
+        if(force > 0) {
+            velocity += acceleration.length() * dt;
+        } else {
+            velocity -= acceleration.length() * dt;
+        }
+        ballPos += (velocity * 0.1f * trackElem.getTotalDistance());
         if(ballPos > 1.0f) {
             ballPos = 0.0f;
         }
         if(ballPos < 0.0f) {
             ballPos = 1.0f;
         }
-    }
-    TrackNode::Ref currentTrackNode = trackElem.getTrackNodeByScale(ballPos);
-    ofVec3f newBallPos = currentTrackNode->getElement();
-    ofVec3f newBallTangent = currentTrackNode->getTangent();
-    
-    currAngle = ofRadToDeg(atan2(newBallTangent.x,newBallTangent.y)) - 90.0f;
-    while (currAngle < 0) {
-        currAngle += 360;
-    }
-    if(animate) {
-        float force = 9.81f * sin(ofDegToRad(currAngle));
-        ball.acceleration = newBallTangent * force;
-        ball.integrate(dt);
-        if(force > 0) {
-            velocity += ball.acceleration.length() * 0.0001f;
-        } else {
-            velocity -= ball.acceleration.length() * 0.0001f;
-        }
-        //velocity = ball.velocity.length() * 0.001f;
     } else {
         ball.velocity.x = 0.0f;
         ball.velocity.y = 0.0f;
         ball.velocity.z = 0.0f;
     }
     ball.setPosition(newBallPos);
+    
+    
 }
 
 void ofApp::draw() {
@@ -248,6 +249,7 @@ void ofApp::drawMainWindow() {
         if(ImGui::Button("Animation")) {
             if(animate == false) {
                 animate = true;
+                velocity = 0.0f;
             } else {
                 animate = false;
             }
@@ -271,6 +273,10 @@ void ofApp::drawMainWindow() {
 }
 
 void ofApp::toggleAnimation() {
+    velocity = 0.0f;
+    ball.velocity.x = 0.0f;
+    ball.velocity.y = 0.0f;
+    ball.velocity.z = 0.0f;
     animate = !animate;
 }
 

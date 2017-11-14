@@ -20,6 +20,7 @@ private:
     float steps;
     float ltlA, ltlB, ltlC;
     float range;
+    float totalDistance;
     ofPolyline path;
     vector<TrackNode::Ref> nodes;
 public:
@@ -40,6 +41,8 @@ public:
     void checkDifference();
     
     void setType(Type _type);
+    
+    float getTotalDistance();
     
     ofVec3f getPositionByScale(float scale);
     TrackNode::Ref getTrackNodeByScale(float scale);

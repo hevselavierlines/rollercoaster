@@ -9,11 +9,12 @@
 #include "Track.hpp"
 
 Track::Track() {
-    steps = 200;
+    steps = 600;
     range = 16;
     changed = true;
     
     nodes.reserve(steps + 1);
+    totalDistance = 0;
 }
 
 void Track::draw() {
@@ -102,7 +103,7 @@ void Track::generate() {
             nodes.push_back(trackNode);
         }
         
-        float totalDistance = nodes[nodes.size() - 1]->getScale();
+        totalDistance = nodes[nodes.size() - 1]->getScale();
         float distanceScaleFactor = 1.0f / totalDistance;
         for(int i = 0; i < nodes.size(); ++i) {
             nodes[i]->setScale(nodes[i]->getScale() * distanceScaleFactor);
@@ -141,7 +142,7 @@ void Track::generate() {
             nodes.push_back(trackNode);
         }
         
-        float totalDistance = nodes[nodes.size() - 1]->getScale();
+        totalDistance = nodes[nodes.size() - 1]->getScale();
         float distanceScaleFactor = 1.0f / totalDistance;
         for(int i = 0; i < nodes.size(); ++i) {
             nodes[i]->setScale(nodes[i]->getScale() * distanceScaleFactor);
@@ -176,7 +177,7 @@ void Track::generate() {
             nodes.push_back(trackNode);
         }
         
-        float totalDistance = nodes[nodes.size() - 1]->getScale();
+        totalDistance = nodes[nodes.size() - 1]->getScale();
         float distanceScaleFactor = 1.0f / totalDistance;
         for(int i = 0; i < nodes.size(); ++i) {
             nodes[i]->setScale(nodes[i]->getScale() * distanceScaleFactor);
@@ -184,6 +185,10 @@ void Track::generate() {
     }
     
     changed = false;
+}
+
+float Track::getTotalDistance() {
+    return (1/totalDistance);
 }
 
 void Track::checkDifference() {
